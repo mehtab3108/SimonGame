@@ -1,43 +1,37 @@
-alert("Remember the pattern as it comes!");
+alert("Remember the pattern as it comes");
 
-var buttonColours=["red","blue","green","yellow"];
-var gamePattern=[];
-var userClickedPattern=[];
-var level=0;
+var userClickedPattern = [];
 
-$(document).one("keypress",function(){
-  nextSequence();
-});
+var buttonColours = ["red", "blue", "green", "yellow"];
 
-function nextSequence(){
-  var randomNumber=Math.floor((Math.random()*4));
-  var randomChosenColour= buttonColours[randomNumber];
+var gamePattern = [];
 
-  gamePattern.push(randomChosenColour);
-  $("#"+randomChosenColour).fadeIn(100).fadeOut(100).fadeIn(100);
-  playSound(randomChosenColour);
+var level = 0;
+
+
+function nextSequence() {
   level++;
-  $("h1").text("Level "+level);
+  var randomNumber = Math.floor((Math.random() * 4));
+  var randomChosenColour = buttonColours[randomNumber];
+  gamePattern.push(randomChosenColour);
+  $("#" + randomChosenColour).fadeIn(100).fadeOut(100).fadeIn(100);
+  playSound(randomChosenColour);
+  $("h1").text("Level " + level);
 }
 
-$(".btn").click(function(){
-  var userChosenColour=this.id;
+
+$(".btn").click(function() {
+  var userChosenColour = this.id;
   userClickedPattern.push(userChosenColour);
   playSound(userChosenColour);
   animatePress(userChosenColour);
+  console.log(userClickedPattern);
   checkSequence();
 });
 
-function checkSequence(){
-  if(JSON.stringify(gamePattern)===JSON.stringify(userClickedPattern)){
-    setTimeout(function(){nextSequence();},1000);
-    userClickedPattern=[];
-  }
-  for(var i=0;i<userClickedPattern.length;i++){
-    if(gamePattern[i]!==userClickedPattern[i]){
-      wrongAnswer();
-    }
-  }
+function playSound(name) {
+  var audio = new Audio(name + ".mp3");
+  audio.play();
 }
 
 function wrongAnswer() {
@@ -54,15 +48,28 @@ function wrongAnswer() {
     });
 }
 
-
-function playSound(name){
-  var audio=new Audio(name+".mp3");
-  audio.play();
+function checkSequence() {
+  if (JSON.stringify(gamePattern) === JSON.stringify(userClickedPattern)) {
+    setTimeout(function() {
+      nextSequence();
+    }, 1000);
+    userClickedPattern = [];
+  }
+  for (var i = 0; i < userClickedPattern.length; i++) {
+    if (gamePattern[i] !== userClickedPattern[i]) {
+      wrongAnswer();
+    }
+  }
 }
 
-function animatePress(currentColour){
-  $("."+currentColour).addClass("pressed");
-  setTimeout(function(){
-    $("."+currentColour).removeClass("pressed");
-  },100);
+function animatePress(currentColour) {
+  $("#" + currentColour).addClass("pressed");
+  setTimeout(function() {
+    $("#" + currentColour).removeClass("pressed");
+  }, 100);
 }
+
+$(document).one("keypress", function() {
+  nextSequence();
+  console.log("key is pressed");
+});
